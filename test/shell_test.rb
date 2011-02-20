@@ -24,7 +24,6 @@ describe "Shell" do
     it "exits with Control-D" do
       mock(shell).get_input { nil }
       dont_allow(shell).eval_input
-      mock(shell).puts
       shell.loop
     end
   end

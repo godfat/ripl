@@ -28,7 +28,6 @@ class Ripl::Shell
   def loop
     before_loop
     catch(:ripl_exit) { while(true) do; loop_once; end }
-    puts unless @input
     after_loop
   end
 
