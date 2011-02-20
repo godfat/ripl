@@ -23,13 +23,6 @@ describe "History with readline" do
     File.read(HISTORY_FILE).should == inputs.join("\n")
   end
 
-  it "#after_loop saves history without duplicates" do
-    inputs = %w{foo bar bar foo}
-    inputs.each {|e| shell.history << e }
-    shell.after_loop
-    File.read(HISTORY_FILE).should == inputs.uniq.join("\n")
-  end
-
   it "#before_loop loads previous history" do
     File.open(HISTORY_FILE, 'w') {|f| f.write "check\nthe\nmike" }
     stub(Ripl::Runner).load_rc

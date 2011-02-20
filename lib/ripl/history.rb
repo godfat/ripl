@@ -17,7 +17,7 @@ module Ripl::History
   end
 
   def write_history
-    File.open(history_file, 'w') {|f| f.write Array(history).uniq.join("\n") }
+    File.open(history_file, 'w') {|f| f.write Array(history).join("\n") }
   end
   alias_method :after_loop, :write_history
 end
