@@ -19,7 +19,9 @@ module Ripl::History
   def write_history
     File.open(history_file, 'w') {|f| f.write Array(history).join("\n") }
   end
-  alias_method :after_loop, :write_history
+  # alias_method would make overriding write_history useless because
+  # it will have a copy of write_history and call it in after_loop.
+  def after_loop; write_history; end
 end
 Ripl::Shell.include Ripl::History
 Ripl.config[:history] = '~/.irb_history'
