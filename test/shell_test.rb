@@ -107,7 +107,7 @@ describe "Shell" do
       }
 
       it "prints it" do
-        @stderr.should =~ /^SyntaxError: compile error/
+        @stderr.should =~ /^SyntaxError:/
       end
 
       it "sets @error_raised" do
