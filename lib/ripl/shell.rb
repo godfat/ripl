@@ -22,6 +22,7 @@ class Ripl::Shell
     @name, @binding = options.values_at(:name, :binding)
     @prompt, @result_prompt = options.values_at(:prompt, :result_prompt)
     @irbrc, @line = options[:irbrc], 1
+    @in_loop = false
   end
 
   # Loops shell until user exits
@@ -29,6 +30,10 @@ class Ripl::Shell
     before_loop
     in_loop
     after_loop
+  end
+
+  def in_loop?
+    @in_loop
   end
 
   def config() Ripl.config end
@@ -46,7 +51,10 @@ class Ripl::Shell
     end
 
     def in_loop
+      @in_loop = true
       catch(:ripl_exit) { loop_once while(true) }
+    ensure
+      @in_loop = false
     end
 
     def add_commands(obj)

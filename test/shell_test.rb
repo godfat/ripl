@@ -56,6 +56,19 @@ describe "Shell" do
     end
   end
 
+  describe "#in_loop?" do
+    it "would return true if it's in in_loop false otherwise" do
+      shell.in_loop?.should == false
+      mock(shell).loop_once{
+        shell.in_loop?.should == true
+        throw :ripl_exit
+      }
+      mock(shell).before_loop
+      mock(shell).after_loop
+      shell.loop
+    end
+  end
+
   describe "#prompt" do
     it "from a string" do
       shell(:prompt=>'> ').prompt.should == '> '
