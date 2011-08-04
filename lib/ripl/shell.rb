@@ -16,7 +16,7 @@ class Ripl::Shell
     :binding => TOPLEVEL_BINDING, :irbrc=>'~/.irbrc'}
   EXIT_WORDS = [nil, 'exit', 'quit']
 
-  attr_accessor :line, :binding, :result, :name
+  attr_accessor :line, :binding, :result, :name, :input
   def initialize(options={})
     options = OPTIONS.merge options
     @name, @binding = options.values_at(:name, :binding)
@@ -27,19 +27,26 @@ class Ripl::Shell
   # Loops shell until user exits
   def loop
     before_loop
-    catch(:ripl_exit) { while(true) do; loop_once; end }
+    in_loop
     after_loop
   end
 
-  def config; Ripl.config; end
+  def config() Ripl.config end
 
   module API
+    MESSAGES = {'prompt' => 'Error while creating prompt',
+      'print_result' => 'Error while printing result'}
+
     attr_accessor :prompt, :result_prompt
     # Sets up shell before looping by loading ~/.irbrc. Can be extended to
     # initialize plugins and their instance variables.
     def before_loop
       Ripl::Runner.load_rc(@irbrc) if @irbrc
       add_commands(eval("self", @binding))
+    end
+
+    def in_loop
+      catch(:ripl_exit) { loop_once while(true) }
     end
 
     def add_commands(obj)
@@ -59,7 +66,7 @@ class Ripl::Shell
     end
 
     # Handles interrupt (Control-C) by printing a newline
-    def handle_interrupt; puts; end
+    def handle_interrupt() puts end
 
     # Sets @result to result of evaling input and print unexpected errors
     def eval_input(input)
@@ -84,7 +91,7 @@ class Ripl::Shell
     def prompt
       @prompt.respond_to?(:call) ? @prompt.call : @prompt
     rescue StandardError, SyntaxError
-      warn "ripl: Error while creating prompt:\n"+ format_error($!)
+      warn "ripl: #{MESSAGES['prompt']}:\n"+ format_error($!)
       OPTIONS[:prompt]
     end
 
@@ -103,12 +110,14 @@ class Ripl::Shell
     # Prints result using #format_result
     def print_result(result)
       puts(format_result(result)) unless @error_raised
+    rescue StandardError, SyntaxError
+      warn "ripl: #{MESSAGES['print_result']}:\n"+ format_error($!)
     end
 
     # Formats errors raised by eval of user input
     # @param [Exception]
     # @return [String]
-    def format_error(err); Ripl::Runner.format_error(err); end
+    def format_error(err) Ripl::Runner.format_error(err) end
 
     # @return [String] Formats result using result_prompt
     def format_result(result)

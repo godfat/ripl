@@ -75,7 +75,7 @@ modifying ~/.irbrc, wrap your irb-specific configuration in a block as follow:
   * IRB.conf -> Ripl.config
   * Handles Ctrl-C quietly
 * Enhancements over irb
-  * ~270 lines (doc included) vs irb's 5000+ lines
+  * ~290 lines (doc included) vs irb's 5000+ lines
   * Easily extendable with plugins
   * Tests and documentation!
   * Customizable completion and completion of method arguments (from bond)
@@ -84,6 +84,7 @@ modifying ~/.irbrc, wrap your irb-specific configuration in a block as follow:
   * Create console commands in a simple, modular way
   * Custom commandline options can be added via a plugin
   * ~/.irbrc errors caught
+  * Well-integrated internationalization (see {ripl-i18n}[http://github.com/cldwalker/ripl-i18n])
 * Different from irb
   * No multi-line evaluation by default (but there is a plugin,
     {ripl-multi_line}[http://github.com/janlelis/ripl-multi_line]).
@@ -151,17 +152,20 @@ command you can take arguments and parse your options as you please. For an exam
 see {ripl-rails}[http://github.com/cldwalker/ripl-rails].
 
 == Credits
-* janlelis for bug fix and tweaks
+* janlelis and godfat for bug fix and tweaks
+* JoshCheek for bug fixes
 
 == Ripl Plugins
 
 * {ripl-multi_line}[http://github.com/janlelis/ripl-multi_line] : evaluate multiple lines
+* {ripl-ripper}[http://github.com/cldwalker/ripl-ripper] : evaluate multiple lines with ripper
 * {ripl-rails}[http://github.com/cldwalker/ripl-rails] : console for rails
 * {ripl-rack}[http://github.com/cldwalker/ripl-rack] : console for rack
 * {ripl-play}[http://github.com/cldwalker/ripl-play] : play back and record input into ripl
 * {ripl-debug}[http://github.com/cldwalker/ripl-debug] : automatically debugs a failed eval
 * {ripl-after_rc}[http://github.com/cldwalker/ripl-after_rc] : provide blocks to run after ~/.irbrc is loaded
 * {ripl-irb}[http://github.com/cldwalker/ripl-irb] : smooths transition from irb
+* {ripl-i18n}[http://github.com/cldwalker/ripl-i18n] : translates ripl to your language
 * {ripl-commands}[http://github.com/cldwalker/ripl-commands] : adds ripl commands similar to irb's commands
 * {ripl-color_error}[http://github.com/cldwalker/ripl-color_error] : colorize errors
 * {ripl-color_streams}[http://github.com/janlelis/ripl-color_streams] : colorizes stderr + stdout
@@ -175,6 +179,9 @@ see {ripl-rails}[http://github.com/cldwalker/ripl-rails].
   display short backtrace
 * {ripl-rocket}[https://github.com/janlelis/ripl-rocket]: outputs ripl result as a hash rocket
 * {ripl-padrino}[https://github.com/achiu/ripl-padrino]: console for padrino
+* {ripltools}[https://github.com/janlelis/ripltools]: a collection of ripl plugins
+* {ripl-rc}[https://github.com/godfat/ripl-rc]: ripl plugins for debugging, class-based coloring and more
+* {ripl-em}[https://github.com/cldwalker/ripl-em]: interact with EM libraries asynchronously
 
 == Ripl Shells
 Shells built on top of ripl:
@@ -182,11 +189,14 @@ Shells built on top of ripl:
 * {nirvana}[http://github.com/cldwalker/nirvana]: A ruby web shell complete with autocomplete
 * {fresh}[http://github.com/janlelis/fresh]: An interesting ruby/system hybrid shell
 * {ripl-johnson}[http://github.com/cldwalker/ripl-johnson]: A js shell based on johnson (firefox tracemonkey)
+* {ronin}[https://github.com/ronin-ruby/ronin]: An exploit development platform using ripl for its console
+* {tux}[http://github.com/cldwalker/tux]: A sinatra shell
 
 == More Ripl Links
 
 * {ripl screencast}[http://www.rubypulse.com/ep0.51_ripl.html]
 * {overview of ripl features}[http://rbjl.net/44-ripl-why-should-you-use-an-irb-alternative]
+* {slides at euroko about ruby consoles}[http://rbjl.net/irbtools+ripl.pdf]
 
 == Irb Alternatives
 Some other irb alternatives to check out:
@@ -194,3 +204,4 @@ Some other irb alternatives to check out:
 * {ir}[http://github.com/raggi/ir]: nice and light
 * {irb2}[http://github.com/wycats/irb2]: yehuda katz's partial attempt at rewriting irb
 * {dietrb}[http://github.com/alloy/dietrb]: mac and ruby 1.9 specific
+* {pry}[http://github.com/banister/pry]: featureful but heavy

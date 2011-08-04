@@ -1,7 +1,14 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 describe "Runner" do
+  def set_dollar_zero(val)
+    $progname = $0
+    alias $0 $progname
+    $0 = val
+  end
+
   describe ".start" do
+    before_all { ARGV.replace [] }
     before { reset_ripl }
 
     it "loads riplrc" do
@@ -36,6 +43,14 @@ describe "Runner" do
       Ripl.start(:name=>'dude')
       Ripl.shell.name.should == 'dude'
     end
+
+    it "prints warning if argument not parsed" do
+      mock_riplrc
+      mock_shell
+      capture_stderr {
+        Ripl.start :argv =>%w{-Idir command}
+      }.should =~ /Unused arguments.*command/
+    end
   end
 
   describe ".run" do
@@ -63,12 +78,6 @@ describe "Runner" do
     end
 
     describe "with subcommand" do
-      def set_dollar_zero(val)
-        $progname = $0
-        alias $0 $progname
-        $0 = val
-      end
-
       def mock_exec(*args)
         mock(Runner).exec('ripl-rails', *args) do
           set_dollar_zero 'ripl-rails'
@@ -103,7 +112,7 @@ describe "Runner" do
       it "has global option parsed after arguments" do
         mock_exec 'test', '-r=blah'
         mock(Runner).require('blah')
-        ripl("rails", "test", "-r=blah", :riplrc=>false)
+        ripl("rails", "test", "-r=blah")
       end
 
       it "has automatic --help" do
@@ -257,6 +266,25 @@ describe "Runner" do
     end
   end
 
+  describe "subclass" do
+    before_all {
+      Tuxedo = Class.new(Ripl::Runner)
+      Tuxedo.app = 'tuxedo'
+      Tuxedo.const_set(:VERSION, '0.0.1')
+      set_dollar_zero 'tuxedo'
+    }
+
+    it "with -v option prints version" do
+      mock(Tuxedo).exit
+      mock(Tuxedo).load_rc(Ripl.config[:riplrc])
+      mock(Ripl.shell).loop
+      capture_stdout {
+        Tuxedo.run(['-v'])
+      }.chomp.should == Tuxedo::VERSION
+    end
+    after_all { set_dollar_zero 'ripl' }
+  end
+
   describe "API" do
     Runner::API.instance_methods.each do |meth|
       it "##{meth} is accessible to plugins" do
@@ -265,6 +293,16 @@ describe "Runner" do
         Runner.extend mod
         Runner.send(meth).should == "pong_#{meth}"
       end
+    end
+
+    it "Runner::MESSAGES only calls #[]" do
+      str = File.read(File.dirname(__FILE__)+'/../lib/ripl/runner.rb')
+      str.scan(/MESSAGES\S+/).all? {|e| e[/MESSAGES\[/] }.should == true
+    end
+
+    it "Runner::OPTIONS only calls #[] and values" do
+      str = File.read(File.dirname(__FILE__)+'/../lib/ripl/runner.rb')
+      str.scan(/OPTIONS[^_\] ]\S+/).all? {|e| e[/OPTIONS(\[|\.values)/] }.should == true
     end
     after_all { Runner.extend Runner::API }
   end

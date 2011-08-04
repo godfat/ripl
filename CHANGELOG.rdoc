@@ -1,3 +1,30 @@
+== 0.4.2
+* Make Shell#input= and Shell#in_loop available
+
+== 0.4.1
+* More support for internationalization
+
+== 0.4.0
+* Support internationalization
+* Allow #history to be overridden easily
+
+== 0.3.6
+* Add Ripl.started?
+
+== 0.3.5
+* Fix subclassed runner printing version
+
+== 0.3.4
+* Rescue failure while printing result
+
+== 0.3.3
+* Warn about unused arguments
+
+== 0.3.2
+* Open #write_history to plugins
+* Fix 1.9 tests
+* Fix Ctrl-D for non-readline
+
 == 0.3.1
 * Allow :readline option to take a string
 

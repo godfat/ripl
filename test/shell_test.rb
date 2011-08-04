@@ -40,7 +40,15 @@ describe "Shell" do
       capture_stdout { shell.loop_once }.should == %[=> "mm"\n]
     end
 
-    it "prints error" do
+    it "prints error from a failed result" do
+      mock(shell).get_input {
+        "obj = Object.new; def obj.inspect; raise 'BOOM'; end; obj"
+      }
+      capture_stderr { shell.loop_once }.
+        should =~ /ripl: Error while printing result.*BOOM/m
+    end
+
+    it "prints error from eval" do
       mock(shell).get_input { "raise 'blah'" }
       capture_stderr {
         capture_stdout { shell.loop_once }.should == ""
@@ -127,6 +135,11 @@ describe "Shell" do
         Shell.send :include, mod
         shell.send(meth).should == "pong_#{meth}"
       end
+    end
+
+    it "Shell::MESSAGES only calls #[]" do
+      str = File.read(File.dirname(__FILE__)+'/../lib/ripl/shell.rb')
+      str.scan(/MESSAGES\S+/).all? {|e| e[/MESSAGES\[/] }.should == true
     end
   end
 end
